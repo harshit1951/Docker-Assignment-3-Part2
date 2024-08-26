@@ -8,9 +8,6 @@ pipeline {
                     // Print the working directory to verify
                     sh 'pwd'
                     
-                    // List files to ensure the JAR file is present
-                    sh 'ls -la'
-                    
                     // Copy the JAR file from the Docker volume to the workspace
                     sh 'sudo cp /var/lib/docker/volumes/my-vol/_data/my-maven-project-1.0-SNAPSHOT.jar .'
                     
