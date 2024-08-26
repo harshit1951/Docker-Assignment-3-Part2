@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Print the working directory to verify
+                    sh 'pwd'
+                    
+                    // List files to ensure the JAR file is present
+                    sh 'ls -la'
+                    
+                    // Copy the JAR file from the Docker volume to the workspace
+                    sh 'sudo cp /var/lib/docker/volumes/my-vol/_data/my-maven-project-1.0-SNAPSHOT.jar .'
+                    
+                    // Build the Docker image
+                    sh 'docker build -t my-docker-image .'
+                }
+            }
+        }
+        
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Run the Docker container
+                    sh 'docker run --name my-docker-container -d my-docker-image'
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up Docker containers and images (optional)
+            sh 'docker container rm -f my-docker-container || true'
+            sh 'docker image rm my-docker-image || true'
+        }
+    }
+}
